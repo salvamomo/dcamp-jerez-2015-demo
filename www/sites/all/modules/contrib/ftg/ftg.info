@@ -3,9 +3,9 @@ description = "Code Generator for custom field types"
 package = TIM
 core = 7.x
 
-; Information added by Drupal.org packaging script on 2015-03-28
-version = "7.x-1.0"
+; Information added by Drupal.org packaging script on 2015-05-21
+version = "7.x-1.1"
 core = "7.x"
 project = "ftg"
-datestamp = "1427566084"
+datestamp = "1432242491"
 

@@ -22,6 +22,16 @@ function ftg_menu() {
 }
 
 /**
+ * Implements hook_admin_paths().
+ */
+function ftg_admin_paths() {
+  $paths = array(
+    'ftg' => TRUE,
+  );
+  return $paths;
+}
+
+/**
  *  Basic form to generate a module for a custom field type.
  */
 function ftg_basic_form($form, &$form_state) {
@@ -831,6 +841,11 @@ function ftg_generate_module_file($module_info, $field_details) {
     $output[] = "    if (sizeof(\$item['{$field_name}']) > sizeof(array_filter(\$item['{$field_name}']))) {";
     $output[] = "      return TRUE;";
     $output[] = "    }";
+    $output[] = "    return FALSE;";
+    $output[] = "  }";
+    $output[] = "}";
+  }
+  else {
     $output[] = "    return FALSE;";
     $output[] = "  }";
     $output[] = "}";
