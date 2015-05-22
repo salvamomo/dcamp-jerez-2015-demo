@@ -1,0 +1,30 @@
+<?php
+
+/**
+ * @file
+ * dcamp_jerez_yeoman module.
+ * Demo de ctools plugins con yeoman.
+ */
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function dcamp_jerez_yeoman_ctools_plugin_api($module, $api) {
+  // Ctools styles and panel panes (ctools content_types).
+  if ($module == 'panels' && $api == 'styles') {
+    return array('version' => 2.0);
+  }
+  // Custom content panes.
+  if ($module == "ctools_custom_content" && $api == "ctools_content") {
+    return array("version" => "1");
+  }
+}
+
+/**
+ * Implements hook_ctools_plugin_directory()
+ */
+function dcamp_jerez_yeoman_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'page_manager' || $module == 'panels' || $module == 'ctools') {
+    return 'plugins/' . $plugin;
+  }
+}
