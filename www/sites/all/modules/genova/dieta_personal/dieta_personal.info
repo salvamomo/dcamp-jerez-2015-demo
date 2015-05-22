@@ -1,0 +1,5 @@
+name = Calculadora Dieta Personal
+description = Formulario para calcular una dieta personal
+core = 7.x
+dependencies[] = ctools
+dependencies[] = mforms
