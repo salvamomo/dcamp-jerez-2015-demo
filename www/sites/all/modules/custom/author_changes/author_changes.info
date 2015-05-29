@@ -1,0 +1,9 @@
+name = Author Changes
+description = "Campo para guardar información de cambios en artículos"
+package = DCAMP JEREZ
+core = 7.x
+
+; Dependencies
+dependencies[] = entityreference_autocomplete
+dependencies[] = date
+dependencies[] = date_popup

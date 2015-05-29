@@ -1,0 +1,170 @@
+<?php
+
+/**
+ * @file
+ * author_changes module.
+ * Campo para guardar información de cambios en artículos.
+ */
+
+/**
+ * Implements hook_field_info().
+ */
+function author_changes_field_info() {
+  return array(
+    'author_changes' => array(
+      'label' => t('Author Changes'),
+      'description' => t('Campo para guardar información de cambios en los artículos'),
+      'default_widget' => 'author_changes_widget_default',
+      'default_formatter' => 'author_changes_formatter_default',
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_widget_info().
+ */
+function author_changes_field_widget_info() {
+  return array(
+    'author_changes_widget_default' => array(
+      'label' => t('Default widget'),
+      'field types' => array('author_changes'),
+      'behaviors' => array(
+        'multiple values' => FIELD_BEHAVIOR_DEFAULT,
+        'default value' => FIELD_BEHAVIOR_DEFAULT,
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_widget_form().
+ */
+function author_changes_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  switch ($instance['widget']['type']) {
+    case 'author_changes_widget_default':
+      $element['author_changes']['uid'] = array(
+        '#type' => 'entityreference',
+        '#era_entity_type' => 'user',
+        '#era_cardinality' => 1,
+        '#title' => t('Uid'),
+        '#default_value' => isset($items[$delta]['uid']) ? $items[$delta]['uid'] : NULL,
+      );
+      $element['author_changes']['description'] = array(
+        '#type' => 'text_format',
+        '#title' => t('Description'),
+        '#format' => isset($items[$delta]['description_format']) ? $items[$delta]['description_format'] : NULL,
+        '#default_value' => isset($items[$delta]['description']) ? $items[$delta]['description'] : '',
+      );
+      $element['author_changes']['date'] = array(
+        '#type' => 'date_popup',
+        '#description' => t('Date'),
+        '#date_type' => DATE_DATETIME,
+        '#date_timezone' => date_default_timezone(),
+        '#date_format' => DATE_FORMAT_DATE,
+        '#date_increment' => 1,
+        '#date_year_range' => '-5:+10',
+        '#default_value' => isset($items[$delta]['date']) ? $items[$delta]['date'] : '',
+      );
+    // Collapse existing entries, for some UX.
+    if (($delta < sizeof($items))) {
+      $fieldset_title = t("{$instance['label']} #{$delta}");
+    }
+    else {
+      $fieldset_title = t("New entry for {$instance['label']}");
+    }
+    $element += array('#type' => 'fieldset');
+    $element['#title'] = t('@fieldset_title', array('@fieldset_title' => $fieldset_title));
+    $element += array(
+      '#collapsible' => TRUE,
+      '#collapsed' => ($delta < sizeof($items)),
+    );
+    break;
+  }
+  return $element;
+}
+
+/**
+ * Implements hook_field_validate().
+ */
+function author_changes_field_validate($entity_type, $entity, $field, $instance, $langcode, $items, &$errors) {
+  if ($field['type'] == 'author_changes') {
+    foreach ($items as $delta => $item) {
+      // If field is not considered empty, validate its data.
+      if (!author_changes_field_is_empty($item, $field)) {
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_field_presave().
+ */
+function author_changes_field_presave($entity_type, $entity, $field, $instance, $langcode, &$items) {
+  if ($field['type'] == 'author_changes') {
+    // Structure the field data as expected by the database.
+    foreach ($items as $delta => $item) {
+      $items[$delta]['uid'] = $item['author_changes']['uid']['entity_id'];
+      $items[$delta]['description'] = $item['author_changes']['description']['value'];
+      $items[$delta]['description_format'] = $item['author_changes']['description']['format'];
+      $items[$delta]['date'] = $item['author_changes']['date'];
+    }
+  }
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function author_changes_field_formatter_info() {
+  return array(
+    'author_changes_formatter_default' => array(
+      'label' => t('Default formatter'),
+      'field types' => array('author_changes'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function author_changes_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+
+  switch ($display['type']) {
+    case 'author_changes_formatter_default':
+    foreach ($items as $delta => $item) {
+      $item_output = '';
+      foreach ($item as $column => $value) {
+        if ($column == 'uid') {
+          $item_output .= '<strong>' . $column . ':</strong>' . ' ' . entity_label('user', entity_load_single('user', $value)) . '<br>';
+        }
+        if ($column == 'description') {
+          $item_output .= '<strong>' . $column . ':</strong>' . ' ' . check_markup($item['description'], $item['description_format']) . '<br>';
+        }
+        if ($column == 'date') {
+          $item_output .= '<strong>' . $column . ':</strong>' . ' ' . date(DATE_FORMAT_DATE, strtotime($value)) . '<br>';
+        }
+      }
+      $element[$delta]['author_changes_row'] = array(
+        '#type' => 'fieldset',
+      );
+      $element[$delta]['author_changes_row']['content'] = array(
+        '#markup' => $item_output,
+      );
+    }
+    break;
+  }
+  return $element;
+}
+
+/**
+ * Implements hook_field_is_empty().
+ */
+function author_changes_field_is_empty($item, $field) {
+  if ($field['type'] == 'author_changes') {
+    if (empty($item['author_changes']['uid'])
+      || empty($item['author_changes']['description'])) {
+        return TRUE;
+    }
+    return FALSE;
+  }
+}
