@@ -1,0 +1,17 @@
+name = DCAMP Jerez 2015
+description = Install profile for the DEMO Site for Drupalcamp Jerez 2015.
+core = 7.x
+
+
+dependencies[] = ctools
+dependencies[] = entity
+dependencies[] = entity_operations
+dependencies[] = views
+dependencies[] = views_ui
+dependencies[] = genova
+dependencies[] = mforms
+
+dependencies[] = author_changes
+dependencies[] = dieta_personal
+dependencies[] = dragon
+dependencies[] = f_views
