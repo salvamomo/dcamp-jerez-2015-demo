@@ -12,8 +12,7 @@ INTRODUCTION
 
 - Drupal site contained under www/.
 - Install it as normally, either through the UI, or using Drush.
-- An installation profile is included: "dcamp", that will enable all the modules
-- generated during the session.
+- An installation profile is included: "dcamp", that will enable all the modules generated during the session.
 
 - To install with Drush:
 > "drush si dcamp --account-pass=admin".
