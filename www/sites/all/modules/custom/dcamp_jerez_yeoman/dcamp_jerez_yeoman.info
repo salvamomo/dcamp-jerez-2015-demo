@@ -1,4 +1,0 @@
-name = Drupalcamp Jerez - Yeoman ctools example
-description = "Demo de ctools plugins con yeoman"
-package = DCAMP
-core = 7.x
