@@ -1,0 +1,23 @@
+name = Dragon
+description = "Módulo para guardaar dragones"
+package = Yeoman
+core = 7.x
+
+dependencies[] = entity
+dependencies[] = views
+dependencies[] = entity_operations
+
+; Entity API Classes
+files[] = includes/entity_classes/dragon.base.inc
+files[] = includes/entity_classes/dragon.dragon.inc
+
+; Entity API Controllers
+files[] = includes/entity_controllers/dragon.controller.inc
+
+; Views Controllers
+files[] = includes/views_controllers/dragon.views_controller.inc
+
+; Forms includes
+files[] = includes/forms/dragon.add.inc
+files[] = includes/forms/dragon.edit.inc
+files[] = includes/forms/dragon.delete.inc

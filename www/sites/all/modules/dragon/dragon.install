@@ -1,0 +1,59 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the dragon module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function dragon_install() {}
+
+/**
+ * Implements hook_schema().
+ */
+function dragon_schema() {
+  $schema['dragon'] = array(
+    'description' => 'Stores dragons information.',
+    'fields' => array(
+      'dragon_id' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique dragon ID.',
+      ),
+      'title' => array(
+        'description' => 'The title of the dragon.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+      ),
+      'created' => array(
+        'description' => 'Unix timestamp of when the dragon was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'changed' => array(
+        'description' => 'Unix timestamp of the last time the dragon was modified.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'uid' => array(
+        'description' => 'User ID of the Drupal user that created the dragon.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('dragon_id'),
+    'foreign keys' => array(),
+  );
+  return $schema;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function dragon_uninstall() {}

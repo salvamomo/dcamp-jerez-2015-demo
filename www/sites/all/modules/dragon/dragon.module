@@ -1,0 +1,190 @@
+<?php
+
+/**
+ * @file
+ * dragon module.
+ * Logic and Controllers for the dragon Entities.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function dragon_menu() {
+  $items['admin/content/dragon'] = array(
+    'title' => 'dragons',
+    'description' => 'Administer dragons',
+    'page callback' => 'dragons_overview',
+    'access arguments' => array('administer dragon'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'includes/dragon.admin.inc',
+  );
+  $items['admin/structure/dragons'] = array(
+    'title' => 'dragons',
+    'description' => 'Administer dragon',
+    'access arguments' => array('administer dragon'),
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_entity_info().
+ */
+function dragon_entity_info() {
+  $items['dragon'] = array(
+    'label' => t('dragon'),
+    'controller class' => 'DragonController',
+    'entity class' => 'Dragon',
+    'metadata controller class' => 'EntityDefaultMetadataController',
+    'views controller class' => 'DragonViewsController',
+    'base table' => 'dragon',
+    'fieldable' => TRUE,
+    'access callback' => 'dragon_access',
+    'entity keys' => array(
+      'id' => 'dragon_id',
+      'label' => 'title',
+    ),
+    'bundles' => array(
+      'dragon' => array(
+        'label' => t('dragon'),
+        'admin' => array(
+          'path' => 'admin/structure/dragons',
+          'access arguments' => array('administer dragons'),
+        ),
+      ),
+    ),
+    // Entity Operations API. Using this instead of 'admin ui', since Entity
+    // operations gives us default form classes that we can use.
+    'operations ui' => array(
+      'path' => 'admin/content/dragon',
+      'controller class' => 'EntityOperationsDefaultUIController',
+    ),
+    'uri callback' => 'entity_class_uri',
+    'module' => 'dragon',
+    'entity cache' => module_exists('entitycache'),
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_entity_operation_info().
+ */
+function dragon_entity_operation_info() {
+  $info = array(
+   'dragon' => array(
+     'view' => array(
+       'handler' => 'EntityOperationsOperationEntityView',
+       'provision' => array(
+         'menu' => array(
+           'default' => TRUE,
+         ),
+         'views field' => TRUE,
+       ),
+     ),
+     'add' => array(
+       'handler' => 'DragonAddForm',
+       'provision' => array(
+         'menu' => TRUE,
+       ),
+     ),
+     'edit' => array(
+       'handler' => 'DragonEditForm',
+       'provision' => array(
+         'menu' => TRUE,
+         'views field' => TRUE,
+       ),
+     ),
+     'delete' => array(
+       'handler' => 'DragonDeleteForm',
+       'provision' => array(
+         'menu' => TRUE,
+         'views field' => TRUE,
+       ),
+     ),
+   ),
+  );
+  return $info;
+}
+
+/**
+ * Access callback for the dragon Entity.
+ *
+ * @see entity_access().
+ */
+function dragon_access($op, $entity, $account = NULL, $entity_type = '') {
+  global $user;
+  $account = isset($account) ? $account : $user;
+
+  switch ($op) {
+    case 'view':
+      return user_access('view dragons', $account);
+      break;
+    case 'edit':
+      return user_access('edit dragons', $account);
+      break;
+    case 'create':
+      return user_access('create dragons', $account);
+      break;
+    case 'delete':
+      return user_access('delete dragons', $account);
+      break;
+  }
+  return FALSE;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function dragon_permission() {
+  return array(
+    'administer dragon' =>  array(
+      'title' => t('Administer dragons'),
+      'description' => t('Perform administration tasks on dragons.'),
+      'restrict access' => TRUE,
+    ),
+    'view dragons' => array(
+      'title' => t('View dragon'),
+    ),
+    'create dragons' => array(
+      'title' => t('Create a dragon'),
+    ),
+    'edit dragons' => array(
+      'title' => t('Edit a dragon'),
+    ),
+    'delete dragons' => array(
+      'title' => t('Delete a dragon'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_extra_fields().
+ */
+function dragon_field_extra_fields() {
+  $extra['dragon']['dragon'] = array(
+    'form' => array(
+      'title' => array(
+        'label' => t('Title'),
+        'description' => t('dragon title.'),
+        'weight' => 0,
+      ),
+    ),
+    'display' => array(
+      'title' => array(
+        'label' => t('Title'),
+        'description' => t('dragon title.'),
+        'weight' => 0,
+      ),
+    ),
+  );
+  return $extra;
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function dragon_views_api() {
+  return array(
+    'api' => '3.0',
+    'path' => drupal_get_path('module', 'dragon') . '/includes/views',
+  );
+}
